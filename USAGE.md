@@ -2,7 +2,7 @@
 
 > 청중: 사람. 설치 끝난 워크스페이스에서 일상적으로 graphify를 쓰는 법.
 > 사전: [`INSTALL.md`](INSTALL.md) 완료 상태.
-> **모든 명령은 graphifyy v0.7.5에서 실증 검증.**
+> **모든 명령은 graphifyy v0.7.5+ (v0.7.6 포함)에서 검증.**
 
 ---
 
@@ -341,7 +341,7 @@ A: **코드 워크스페이스에선 X**. graphify 단독으로 충분. LLM Wiki
 
 ### Q3. AST 추출은 어떤 언어 지원하나?
 
-22+ 언어 (Tree-sitter 기반). graphify v0.7.5 기준:
+22+ 언어 (Tree-sitter 기반). graphify v0.7.5+ 기준:
 - Python, TypeScript, JavaScript, Go, Rust, Java, C, C++, Ruby, Swift, Kotlin, C#, Scala, PHP, Lua, Fortran, R, Bash, SQL 등
 
 미지원 언어는 LLM 시멘틱 추출에 의존 (옵션 B/C 사용).
@@ -395,7 +395,7 @@ LLM 호출은 docs·papers·images 추출 또는 옵션 B/C 풀 빌드 시에만
 
 ### Q7. 다른 AI 도구도 사용 가능?
 
-17개 통합 지원 (graphify v0.7.5):
+17개 통합 지원 (graphify v0.7.5+):
 
 | 카테고리 | 지원 도구 |
 |---|---|
