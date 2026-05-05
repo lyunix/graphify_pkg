@@ -39,43 +39,52 @@
 
 ---
 
-## 5분 부트스트랩 (3가지 진입 옵션)
+## 5분 부트스트랩
 
-### 옵션 A — 가장 빠름·무비용 (AST-only first build)
+### 1단계 — 본 패키지 받기 (머신당 1회)
+
+```bash
+git clone https://github.com/lyunix/graphify_pkg ~/dev/graphify_pkg
+```
+
+(선택, Claude Code 사용자) — 새 워크스페이스마다 `/graphify-bootstrap` 한 줄로 셋업하려면 스킬 글로벌 등록:
+```bash
+cp -R ~/dev/graphify_pkg/skills/graphify-bootstrap ~/.claude/skills/
+```
+
+### 2단계 — 새 코드 워크스페이스에서 부트스트랩
+
+#### 자동 — Bootstrap 스킬 (가장 쉬움, Claude Code)
 
 ```bash
 cd ~/dev/your-project
-pip install graphifyy                                                    # 1회만
-cp /path/to/graphify_pkg/templates/graphifyignore.template .graphifyignore
-graphify update .                                                         # 첫 빌드 (LLM 무호출)
 ```
 
-→ `graphify-out/` 자동 생성. AST 기반 그래프 즉시 확보. **API key 불필요**.
+Claude Code 세션에서:
+```
+/graphify-bootstrap
+```
 
-### 옵션 B — Claude Code 사용자 (가장 풍부)
+→ 자동으로: CLI 확인·설치 → `.graphifyignore` 적용 → 첫 빌드 (옵션 A) → always-on hook → 검증 + god nodes top 5 보고.
+
+#### 수동 — 직접 명령 (다른 AI 도구·CLI 직접 사용자)
 
 ```bash
 cd ~/dev/your-project
-pip install graphifyy
-cp /path/to/graphify_pkg/templates/graphifyignore.template .graphifyignore
-graphify install --platform claude  # 또는 `graphify claude install` — 글로벌 스킬 + 프로젝트 always-on
+pip install graphifyy                                                  # CLI 설치 (1회만, 머신당)
+cp ~/dev/graphify_pkg/templates/graphifyignore.template .graphifyignore
+graphify update .                                                      # 첫 빌드 (AST-only, API key 무관)
+graphify claude install                                                # always-on (Claude Code) — 다른 도구는 INSTALL.md §3.2
+graphify hook install                                                  # (선택) 매 commit 후 자동 incremental
 ```
 
-```
-/graphify .                          # Claude Code 슬래시 — 현재 세션이 LLM 시멘틱 추출 수행
-```
+### 빌드 옵션 비교 (3가지)
 
-→ 풀 그래프 (AST + LLM 시멘틱 + 커뮤니티). 토큰은 *현재 Claude 세션 한도* 사용.
-
-### 옵션 C — 헤드리스 풀 추출 (CI/배치 자동화)
-
-```bash
-export ANTHROPIC_API_KEY=sk-ant-...   # 또는 MOONSHOT_API_KEY=...
-cd ~/dev/your-project
-graphify extract .                     # 풀 추출 (AST + LLM)
-```
-
-→ API key 필수. CI 파이프라인·자동화 시 사용.
+| 옵션 | 명령 | 비용 | 언제 |
+|---|---|---|---|
+| **A** — AST-only | `graphify update .` | 무 | 코드 위주 (default 권장) |
+| **B** — Claude Code 풀 | `/graphify .` | 세션 토큰 | docs/papers 풍부 |
+| **C** — 헤드리스 풀 (CI) | `graphify extract .` | API key 필요 (`ANTHROPIC_API_KEY` 또는 `MOONSHOT_API_KEY`) | CI/배치 |
 
 상세 절차·트러블슈팅 → [`INSTALL.md`](INSTALL.md). 사용·베스트 프랙티스 → [`USAGE.md`](USAGE.md).
 
