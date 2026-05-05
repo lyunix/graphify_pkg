@@ -49,6 +49,11 @@ git clone https://github.com/lyunix/graphify_pkg ~/dev/graphify_pkg
 
 (선택, Claude Code 사용자) — 새 워크스페이스마다 `/graphify-bootstrap` 한 줄로 셋업하려면 스킬 글로벌 등록:
 ```bash
+~/dev/graphify_pkg/bootstrap.sh
+```
+
+또는 수동:
+```bash
 cp -R ~/dev/graphify_pkg/skills/graphify-bootstrap ~/.claude/skills/
 ```
 

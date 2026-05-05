@@ -397,7 +397,19 @@ Claude Desktop config 예 (`~/Library/Application Support/Claude/claude_desktop_
 
 ## 6. AI 에이전트용 부트스트랩 (한 줄)
 
-[`skills/graphify-bootstrap/SKILL.md`](skills/graphify-bootstrap/SKILL.md)을 `~/.claude/skills/graphify-bootstrap/SKILL.md`에 복사 후:
+스킬 글로벌 등록 (머신당 1회):
+
+```bash
+~/dev/graphify_pkg/bootstrap.sh
+```
+
+또는 수동:
+```bash
+mkdir -p ~/.claude/skills
+cp -R ~/dev/graphify_pkg/skills/graphify-bootstrap ~/.claude/skills/
+```
+
+이후 어느 워크스페이스에서든 Claude Code 세션에서:
 
 ```
 /graphify-bootstrap
