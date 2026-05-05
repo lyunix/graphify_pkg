@@ -108,8 +108,14 @@ graphify extract .                     # 풀 추출 (AST + LLM)
 
 ## 라이선스 / 출처
 
-- Graphify 본체: [github.com/safishamsi/graphify](https://github.com/safishamsi/graphify) (오픈소스)
+**라이선스**: [MIT License](LICENSE) — Copyright (c) 2026 lyunix.
+Graphify 본체와 동일 라이선스로 일관성·호환성 유지.
+
+**Upstream attribution** (Graphify 본체):
+- GitHub: [github.com/safishamsi/graphify](https://github.com/safishamsi/graphify) (MIT, Copyright 2026 Safi Shamsi)
 - 한국어 랜딩: [graphify.net/kr](https://graphify.net/kr/)
-- 본 패키지 (graphify_pkg): graphify 사용을 위한 *부트스트랩 키트*. graphify 본체와 별개.
+- 본 패키지의 `templates/claude-md-section.template.md`·`templates/claude-settings-hook.json`은 `graphify claude install` 명령이 산출하는 내용을 *오프라인 참조용*으로 수록 (Graphify MIT 라이선스 하).
+
+**본 패키지 (graphify_pkg)**: graphify 사용을 위한 *부트스트랩 키트*. graphify 소스 코드는 재배포하지 않음 — 문서·템플릿·스킬만 제공.
 
 본 패키지의 가이드는 실제 운영 경험 (cc_wiki 풀 빌드 305 nodes / 27 communities / 4.2× 절감, 2026-05-05) 기반으로 작성. 모든 명령은 graphifyy v0.7.5에서 실증 검증.
