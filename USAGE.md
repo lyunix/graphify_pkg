@@ -225,24 +225,80 @@ cache는 content-hash 기반이라 rename은 cache hit 유지. 내용 바뀐 파
 - **월 1회 audit**: 같은 보고서 재방문 — *시간이 지나며 god node가 어떻게 변했는지* 추적
 - **리팩토링 전**: 약한 커뮤니티 (cohesion < 0.1) 우선 검토
 
-### 4.6 큰 모노레포 (5,000+ 노드)
+### 4.6 큰 또는 다국어 모노레포 — 분리 vs 통합 그래프
 
-graphify는 5,000+ 노드 시 HTML viz 자동 경고.
+분리 빌드를 권장하는 trigger 두 가지:
 
-전략:
-1. **디렉토리 단위 분할 빌드**:
-   ```bash
-   graphify update packages/frontend/
-   graphify update packages/backend/
-   graphify update packages/shared/
-   ```
-2. **cross-repo 통합 (선택)**:
-   ```bash
-   graphify merge-graphs packages/frontend/graphify-out/graph.json \
-                         packages/backend/graphify-out/graph.json \
-                         --out cross-package-graph.json
-   ```
-3. `cluster-only --no-viz` 플래그로 HTML 생성 skip, JSON·report만 사용
+| Trigger | 이유 |
+|---|---|
+| **5,000+ 노드** | HTML viz 자동 경고. 빌드 시간 ↑ |
+| **다국어/다도메인 모노레포** | 한 repo 안에 frontend (TS/JSX) + backend (Python) 처럼 언어·패러다임이 다른 코드 공존. 노드 수 적어도 god nodes·community 가 도메인별로 *더 정확*해짐 |
+
+#### 분리 빌드 — 디렉토리 단위
+
+```bash
+graphify update src/backend       # ./src/backend/graphify-out/
+graphify update src/frontend      # ./src/frontend/graphify-out/
+
+# packages 패턴
+graphify update packages/backend
+graphify update packages/frontend
+graphify update packages/shared
+```
+
+각 sub-tree 가 *자기 디렉토리에* graphify-out/ 를 따로 생성. 일상 작업은 자기 도메인 그래프만 참조.
+
+#### 통합 빌드 — 풀스택 영향 분석용
+
+```bash
+graphify update .                 # 루트 — 전체 그래프
+```
+
+통합 그래프가 가치 있는 시점:
+- API 계약 변경 (frontend fetcher ↔ backend endpoint 영향)
+- 풀스택 리팩토링 시 cross-language *접점* 추적
+- 월 1회 audit — 도메인 간 결합도 모니터링
+
+분리 그래프에선 안 보이는 cross-language INFERRED edges (예: `handleGenerate() --calls--> postGenerate()` frontend→backend) 가 통합 그래프에서만 드러남.
+
+#### 분리 vs 통합 비교
+
+| 측면 | 분리 그래프 | 통합 그래프 |
+|---|---|---|
+| god nodes 정확도 | 도메인별로 *선명* | 일부 희석 |
+| community 응집도 | 도메인 내부 — 정확 | 도메인별 자연 분리 + 통합 노이즈 |
+| cross-language 접점 | 안 보임 | 보임 (INFERRED edges) |
+| 빌드 시간 | 짧음 (sub-tree만) | 김 (전체) |
+| 일상 사용 | ✅ 매일 | ❌ 월 1회 audit / 풀스택 변경 시 |
+
+#### 운영 권장
+
+- 일상 작업 → 분리 그래프 사용
+- 풀스택 변경·API 계약 검토 → 통합 그래프
+- `.gitignore` 에 모든 graphify-out 의 cache/manifest/cost 처리:
+  ```
+  graphify-out/cache/
+  graphify-out/manifest.json
+  graphify-out/cost.json
+  src/backend/graphify-out/cache/
+  src/backend/graphify-out/manifest.json
+  src/backend/graphify-out/cost.json
+  src/frontend/graphify-out/cache/
+  src/frontend/graphify-out/manifest.json
+  src/frontend/graphify-out/cost.json
+  ```
+
+#### Cross-graph 통합 (선택, 5,000+ 노드 시)
+
+분리 그래프를 *하나의 graph.json* 으로 합치려면:
+
+```bash
+graphify merge-graphs src/frontend/graphify-out/graph.json \
+                      src/backend/graphify-out/graph.json \
+                      --out cross-package-graph.json
+```
+
+5,000+ 노드 환경에서 HTML viz 부담을 줄이려면 `cluster-only --no-viz` 로 HTML 생성 skip 후 JSON/report 만 사용.
 
 ### 4.7 보안·기밀 코드
 
