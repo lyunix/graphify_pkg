@@ -5,7 +5,7 @@
     "2. 수동 통합 시: 이 파일 내용을 프로젝트의 .claude/settings.json에 머지.",
     "3. 기존 settings.json이 있으면 'hooks' 키만 추가 (다른 키 보존).",
     "4. 검증: Bash로 grep/find 호출 시 'graphify: Knowledge graph exists' 알림 자동 출력.",
-    "5. 검증된 양식 — cc_wiki에서 graphifyy v0.7.5 + `graphify claude install` 실측."
+    "5. 검증된 양식 — graphifyy v0.7.5 + `graphify claude install` 실측."
   ],
   "//매칭 패턴": "Bash 도구 호출 시 명령어에 grep|rg|ripgrep|find|fd|ack|ag 포함되면 hook 발동",
   "//hook 동작": "graphify-out/graph.json 존재 시 stdout에 hookSpecificOutput JSON 출력 → AI에 컨텍스트 주입",

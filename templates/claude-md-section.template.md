@@ -8,7 +8,7 @@
     3. 함께: .claude/settings.json에 PreToolUse hook 등록 필요
        (templates/claude-settings-hook.json 참조 또는 `graphify claude install`)
   
-  검증: cc_wiki에서 graphifyy v0.7.5 + `graphify claude install`로 실측 적용된 양식.
+  검증: graphifyy v0.7.5에서 `graphify claude install`로 실측 적용된 양식.
 -->
 
 <!-- ↓ COPY ↓ -->

@@ -324,9 +324,9 @@ graphify save-result \
 
 ## 6. FAQ
 
-### Q1. cc_wiki 같은 LLM Wiki 시스템이 필요한가?
+### Q1. LLM Wiki / PKM 시스템이 함께 필요한가?
 
-A: **코드 워크스페이스에선 X**. graphify 단독으로 충분. LLM Wiki는 *PKM*용 별도 시스템. 코드 분석에는 과한 운영 부담.
+A: **코드 워크스페이스에선 X**. graphify 단독으로 충분. LLM Wiki는 *PKM*용 별도 시스템 (raw/wiki/Output 3계층, ingest·query·lint 모드 등). 코드 분석에는 과한 운영 부담.
 
 [Karpathy LLM Wiki 패턴](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)이 흥미롭다면 별도 wiki 볼트 부트스트랩 권장.
 
