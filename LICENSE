@@ -19,24 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-## Attribution
-
-This package (graphify_pkg) is a bootstrap kit for Graphify
-(https://github.com/safishamsi/graphify), which is independently released under
-the MIT License (Copyright (c) 2026 Safi Shamsi).
-
-This package does NOT redistribute Graphify's source code. It provides
-documentation, templates, and configuration helpers (CLAUDE.md section,
-.claude/settings.json PreToolUse hook, .graphifyignore patterns, and a
-Claude Code bootstrap skill) for using Graphify in code workspaces.
-
-The CLAUDE.md graphify section template (templates/claude-md-section.template.md)
-and PreToolUse hook (templates/claude-settings-hook.json) are content produced
-by `graphify claude install` and are reproduced here under Graphify's MIT
-License for offline reference and manual integration.
-
-For Graphify itself (CLI, library, and skill), refer to the upstream project:
-https://github.com/safishamsi/graphify
