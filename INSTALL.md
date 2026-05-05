@@ -218,6 +218,35 @@ start graphify-out/graph.html      # Windows
 - `GRAPH_REPORT.md`에 god nodes 섹션 존재
 - 브라우저에 노드·엣지 시각화 표시
 
+### 2.4 `graphify-out/` git tracking 정책 (권장 default)
+
+빌드 후 `graphify-out/` 의 어떤 파일을 git 으로 추적할지. **권장 default**:
+
+```
+# .gitignore 에 추가
+graphify-out/cache/         # 머신별 다름
+graphify-out/manifest.json  # 절대경로 — 머신마다 다름
+graphify-out/cost.json      # 로컬 토큰 트래킹
+
+# 결과: graph.json, graph.html, GRAPH_REPORT.md 만 commit
+```
+
+또는 `templates/gitignore-graphify.template` 한 줄로 적용:
+```bash
+cat /path/to/graphify_pkg/templates/gitignore-graphify.template >> .gitignore
+```
+
+각 파일 trade-off 상세 → [`USAGE.md` §6 Q4](USAGE.md).
+
+#### 정책 비교
+
+| 정책 | .gitignore 패턴 | 장점 | 단점 |
+|---|---|---|---|
+| **default — 권장** | cache, manifest.json, cost.json | 팀이 최신 그래프 공유 + repo 가벼움 | graph.json 이 코드 변경마다 diff 발생 |
+| 보고서만 commit | `graphify-out/*` + `!graphify-out/GRAPH_REPORT.md` (force-add) | 모노레포·repo 최소화 | 그래프 본체는 각자 빌드 필요 |
+| 전체 ignore | `graphify-out/` | 가장 가벼움 | 그래프 공유 0, 각자 매번 빌드 |
+| 전체 commit | (ignore 안 함) | 단일 머신 — 간단 | manifest 절대경로 stale, repo 비대화 |
+
 ---
 
 ## 3. 통합 (선택, 권장) — AI 코딩 도구별

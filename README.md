@@ -86,7 +86,7 @@ graphify hook install                                                  # (선택
 | **B** — Claude Code 풀 | `/graphify .` | 세션 토큰 | docs/papers 풍부 |
 | **C** — 헤드리스 풀 (CI) | `graphify extract .` | API key 필요 (`ANTHROPIC_API_KEY` 또는 `MOONSHOT_API_KEY`) | CI/배치 |
 
-상세 절차·트러블슈팅 → [`INSTALL.md`](INSTALL.md). 사용·베스트 프랙티스 → [`USAGE.md`](USAGE.md).
+빌드 후 권장 git 정책 — `graphify-out/{cache,manifest.json,cost.json}` ignore, `graph.json`·`graph.html`·`GRAPH_REPORT.md` commit. 상세 → [`INSTALL.md` §2.4](INSTALL.md). 그 외 절차·사용법 → [`USAGE.md`](USAGE.md).
 
 ---
 
