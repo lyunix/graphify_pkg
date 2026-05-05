@@ -1,0 +1,32 @@
+# === Graphify ===
+# 사용법: cat templates/gitignore-graphify.template >> .gitignore
+# 또는 .gitignore 에 직접 복사.
+#
+# 권장 default — 머신·로컬 의존 산출물만 ignore.
+# graph.json, graph.html, GRAPH_REPORT.md 는 commit (팀 공유).
+graphify-out/cache/
+graphify-out/manifest.json
+graphify-out/cost.json
+
+# 다국어/다도메인 분리 빌드 시 (USAGE §4.6 참조)
+src/backend/graphify-out/cache/
+src/backend/graphify-out/manifest.json
+src/backend/graphify-out/cost.json
+src/frontend/graphify-out/cache/
+src/frontend/graphify-out/manifest.json
+src/frontend/graphify-out/cost.json
+packages/*/graphify-out/cache/
+packages/*/graphify-out/manifest.json
+packages/*/graphify-out/cost.json
+
+# === 대안 정책 — 보고서만 commit (선택) ===
+# default 대신 그래프 본체도 ignore 하고 보고서만 force-add 하려면
+# 위 라인 대신 다음 두 줄 사용:
+#   graphify-out/*
+#   !graphify-out/GRAPH_REPORT.md
+# 그 후: git add -f graphify-out/GRAPH_REPORT.md
+#
+# === 대안 정책 — 전체 ignore (가장 가벼움) ===
+# 그래프 산출물을 git 으로 공유 안 하고 각자 빌드:
+#   graphify-out/
+# (USAGE §6 Q4 trade-off 표 참조)
