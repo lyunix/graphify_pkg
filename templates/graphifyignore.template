@@ -1,0 +1,98 @@
+# .graphifyignore — graphify가 graph 빌드 시 제외할 패턴
+# 문법: .gitignore 동일
+# 적용: 프로젝트 루트에 .graphifyignore로 복사
+
+# === 빌드·캐시 산출물 (재생성 가능) ===
+node_modules/
+dist/
+build/
+out/
+target/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.tox/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# === 의존성 lock·바이너리 ===
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+Cargo.lock
+go.sum
+
+# === 압축·미니파이 (가독성 X) ===
+*.min.js
+*.min.css
+*.bundle.js
+*.map
+
+# === 테스트 커버리지·아티팩트 ===
+coverage/
+.coverage
+htmlcov/
+*.lcov
+.nyc_output/
+
+# === IDE·OS ===
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# === graphify 자체 ===
+graphify-out/cache/         # (선택) 공유 시 머신별 차이 발생 가능
+graphify-out/manifest.json  # 절대경로 — 머신마다 다름. 항상 ignore.
+graphify-out/cost.json      # 로컬 토큰 트래킹
+
+# === 큰 binary·미디어 ===
+*.zip
+*.tar.gz
+*.tar.bz2
+*.7z
+*.rar
+*.iso
+*.dmg
+*.exe
+*.dll
+*.so
+*.dylib
+*.jar
+*.war
+*.ear
+*.class
+*.o
+*.a
+
+# === 데이터·DB ===
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.csv.gz
+data/raw/
+
+# === 로그·임시 ===
+*.log
+logs/
+tmp/
+.cache/
+
+# === Claude Code / AI 도구 로컬 상태 ===
+.claude/settings.local.json
+.claude/.credentials.json
+.claude/projects/
+.claude/todos/
+
+# === 프로젝트별 추가 ===
+# 이 아래에 프로젝트 특화 패턴 추가:
+# secrets/
+# fixtures/large/
