@@ -69,6 +69,64 @@ graphify install                # 글로벌 SKILL 동기화 (~/.claude/skills/gr
 | **Windows (WSL)** | macOS와 동일 동작 |
 | **여러 Python 버전** | `python3 -m pip install graphifyy`로 어떤 python에 설치되는지 명확화 |
 
+### 1.4 프로젝트 `.venv` 격리 (선택, 권장)
+
+글로벌 설치 (§1.1) 대신 프로젝트별 `.venv` 안에 graphifyy 를 두면 *워크스페이스 격리*가 가능합니다. 한 머신에 여러 프로젝트가 서로 다른 graphifyy 버전을 요구할 때 충돌 회피, 프로젝트 deps 와 함께 관리.
+
+```bash
+cd ~/dev/your-project
+python3 -m venv .venv
+.venv/bin/pip install --upgrade pip
+.venv/bin/pip install graphifyy
+```
+
+검증:
+```bash
+.venv/bin/graphify --help | head -3
+.venv/bin/pip show graphifyy | grep Version       # 0.7.5+
+```
+
+이후 모든 graphify 명령은 `.venv/bin/` prefix 사용 또는 `source .venv/bin/activate` 후 사용:
+
+```bash
+.venv/bin/graphify update .
+.venv/bin/graphify claude install
+
+# 또는 활성화 후:
+source .venv/bin/activate
+graphify update .
+```
+
+#### 글로벌 + `.venv` 동시 설치 시 — skill 버전 동기화
+
+`.venv` 의 graphify 와 글로벌 graphify 가 다른 버전인 경우, 명령 실행 시 다음 경고가 출력됩니다:
+
+```
+warning: skill is from graphify 0.7.5, package is 0.7.6. Run 'graphify install' to update.
+```
+
+해석:
+- 글로벌 `~/.claude/skills/graphify/SKILL.md` 가 *예전 버전 시점*에 등록됨
+- 현재 실행 중인 graphify (보통 `.venv` 의 더 최신 버전) 와 skill 버전 불일치
+- **동작에는 영향 없음** — 경고만 출력
+
+해결 옵션:
+
+| 의도 | 명령 | 효과 |
+|---|---|---|
+| 글로벌 skill 을 현재 graphify 버전으로 동기화 | `graphify install` (또는 `.venv/bin/graphify install`) | `~/.claude/skills/graphify/SKILL.md` 가 현재 버전으로 덮어쓰기 됨 |
+| 다중 워크스페이스 운영 — 글로벌만 단일 진실 | 글로벌 graphify (예: pyenv 또는 system) 에서만 `graphify install` 실행 | 다른 워크스페이스의 `.venv` graphify 가 다른 버전이어도 글로벌 skill 하나로 일관됨 |
+
+다중 워크스페이스 환경에서는 *글로벌 graphify 만 `install`* 하는 것이 안전합니다. 각 워크스페이스의 `.venv` graphify 가 글로벌 skill 을 덮어쓰면, 다른 워크스페이스에서 다른 버전 skill 을 보게 될 수 있습니다.
+
+#### `.venv` 격리의 한계
+
+| 항목 | 영향 | 대응 |
+|---|---|---|
+| `.venv` 폴더 이동·재생성 | `.venv/bin/graphify` 의 shebang stale → `command not found` 또는 import error | `.venv/bin/pip install --force-reinstall graphifyy` 또는 `.venv` 재생성 |
+| git post-commit hook | hook 환경에 `.venv` 활성화 안 됨 → `graphify` PATH 못 찾음 | 글로벌 graphify 병용, 또는 hook 안에서 `.venv/bin/graphify` 절대경로 wrapper 사용 |
+| `manifest.json` 절대경로 | 머신간 incremental 비호환 | `.venv` 와 무관 — 풀 빌드 1회로 재생성 |
+
 ---
 
 ## 2. 워크스페이스 부트스트랩 (프로젝트마다 1회)
@@ -295,14 +353,14 @@ Claude Desktop config 예 (`~/Library/Application Support/Claude/claude_desktop_
 | 증상 | 원인 후보 | 해결 |
 |---|---|---|
 | `graphify: command not found` | PATH 또는 pip install 실패 | `pip show graphifyy`로 위치 확인. `~/.pyenv/shims` 또는 `~/.local/bin` PATH 검사 |
-| `skill is from graphify X.Y.Z, package is A.B.C` 경고 | CLI ≠ skill 버전 | `pip install --upgrade graphifyy` → `graphify install` |
+| `skill is from graphify X.Y.Z, package is A.B.C` 경고 | CLI ≠ skill 버전 (특히 글로벌 + `.venv` 병용 시 자주 발생) | 동작에는 영향 없음. 동기화하려면 `graphify install` 실행. 다중 워크스페이스는 §1.4 정책 참조 |
 | `error: no LLM API key found` | `graphify extract` 실행 시 | `export ANTHROPIC_API_KEY=...` 또는 `MOONSHOT_API_KEY=...` 또는 옵션 A·B 사용 |
 | `Refusing to overwrite (new graph N nodes < existing M)` | 의도적 corpus 축소 | `graphify update . --force` 또는 `GRAPHIFY_FORCE=1 graphify update .` |
 | `manifest.json` 절대경로 stale (다른 머신) | manifest는 머신 절대경로 사용 | 풀 빌드 1회로 manifest 재생성 |
 | HTML viz 5,000+ 노드 경고 | 대형 모노레포 | `cluster-only --no-viz` 또는 디렉토리 단위 분할 후 `merge-graphs` |
 | `.graphifyignore` 무시됨 | 패턴 문법 오류 | `.gitignore` 동일 문법 사용. 절대경로 `/` 의미 주의 |
 | Windows native에서 hook 미작동 | PreToolUse 미지원 | WSL 사용 권장 |
-| pyenv `.venv` graphify가 stale shebang | .venv 경로 변경됨 | 글로벌 pyenv graphify 사용 또는 `.venv` 재생성 |
+| pyenv `.venv` graphify가 stale shebang | .venv 경로 변경됨·재생성됨 | `.venv/bin/pip install --force-reinstall graphifyy` 또는 `.venv` 재생성 (§1.4 참조) |
 | MCP 서버 경로 오류 | 상대경로 사용 | `claude_desktop_config.json`은 *절대경로* 필수 |
 | 비-AST 언어 (Verilog, Tcl 등) | tree-sitter 미지원 | LLM 시멘틱 추출에 의존 (옵션 B/C) |
 
