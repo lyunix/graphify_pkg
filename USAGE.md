@@ -28,7 +28,7 @@
 | 첫 빌드·풀 리빌드 (AST-only) | `graphify update .` | 1회 / 큰 리팩토링 후 | 무 |
 | 첫 빌드·풀 리빌드 (LLM 풀) | `/graphify .` (Claude Code) | 1회 / 큰 리팩토링 후 | 세션 토큰 |
 | 헤드리스 풀 추출 (CI) | `graphify extract .` | CI 빌드 | API key 사용 |
-| 증분 갱신 (코드 변경) | `graphify update .` | 매 작업 세션 / git hook 자동 | 무 |
+| 증분 갱신 (코드 변경) | `graphify update .` | 매 commit 후 (git hook) 또는 다음 작업 시작 직전 — §4.4 빈도 룰 참조 | 무 |
 | 코드 질문 답변 | 자연어 질문 — AI가 GRAPH_REPORT.md 우선 참조 | 매일 | 응답 토큰만 |
 | 그래프 시각화 | `open graphify-out/graph.html` | 작업 시 옆에 띄우기 | 무 |
 | 사람용 보고서 | `cat graphify-out/GRAPH_REPORT.md` | 월 1회 audit | 무 |
@@ -215,6 +215,28 @@ graphify-out/manifest.json  # 절대경로 — 머신마다 다름
 | 1주~1개월 정기 audit | 옵션 B/C 풀 빌드 — 그래프 구조 재평가 |
 
 cache는 content-hash 기반이라 rename은 cache hit 유지. 내용 바뀐 파일만 재추출.
+
+#### 권장 갱신 빈도 (요약)
+
+graphify update 를 *언제* 돌릴지에 대한 명확한 룰:
+
+| 시점 | 명령 | 자동/수동 |
+|---|---|---|
+| **매 commit 후** (권장 default) | (자동) git post-commit hook | `graphify hook install` 1회 셋업 |
+| 코드 변경 후 다음 작업 시작 직전 (hook 미설치 시) | `graphify update .` (서브트리는 sub-path) | 수동, 5~20초 |
+| PR 리뷰 직전 | `graphify update .` | 수동 |
+| 큰 리팩토링·corpus 축소 후 | `graphify update . --force` | 수동, 안전가드 무시 |
+| 월 1회 audit (옵션 B/C) | `/graphify .` 또는 `graphify extract .` | 수동, LLM 비용 |
+
+*안 돌려도 큰일 안 남* — 그래프가 stale 해질 뿐. 코드 질문 시 hook 알림은 stale 그래프도 어느 정도 가치 유지. 단 god nodes 가 의미 있게 변할 변경 (대형 리팩토링·rename) 후엔 즉시 갱신 권장.
+
+빈도 결정 fallacy:
+
+| ❌ 잘못된 패턴 | 문제 | ✅ 올바른 패턴 |
+|---|---|---|
+| "매 시간 cron" | 변경 없으면 무의미한 빌드 | git hook 으로 *변경 시점*에만 |
+| "한 번도 안 돌림" | 그래프 stale → AI 답변 점점 부정확 | git hook 또는 daily 수동 |
+| "매 파일 저장마다 watch" | 빈번한 disk IO + AST 재추출 | watch 모드는 `--debounce 3` 이상 |
 
 ### 4.5 `/graphify` 결과를 *읽는* 습관
 
